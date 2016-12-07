@@ -8,6 +8,8 @@ timeout.t - Test suite for IPC::Run timeouts
 
 =cut
 
+warn "starting timeout...";
+
 use strict;
 
 BEGIN {

@@ -21,18 +21,37 @@ BEGIN {
 }
 
 use Test::More;
+
+BEGIN {
+warn "win32?";
+    if ($^O eq 'MSWin32') {
+warn "win32!";
+	plan skip_all => 'skipping';
+warn "skip early!";
+	exit 0;
+    }
+}
+
+__END__
+
 use IPC::Run qw( :filters :filter_imp start run );
 use t::lib::Test;
 
-BEGIN {
+#BEGIN
+ {
+    warn "check WIN32_MODE: " . IPC::Run::Win32_MODE();
     if ( IPC::Run::Win32_MODE() ) {
         plan skip_all => 'Skipping on Win32';
+	warn "now call exit(0)";
         exit(0);
+	warn "never reached!";
     }
     else {
         plan tests => 3;
     }
 }
+
+warn "never reached(2)!";
 
 my @receiver = (
     $^X,
@@ -54,7 +73,9 @@ $h = start \@receiver, \undef, \$out;
 pump $h until $out =~ /Ok/;
 ok 1;
 $out = "";
+warn "huh? about to send USR2...";
 $h->signal("USR2");
+warn "signal sent...";
 pump $h;
 $h->signal("USR1");
 pump $h;
