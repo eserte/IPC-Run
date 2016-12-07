@@ -9,7 +9,7 @@ install:
 
 build_script:
   - perl Makefile.PL
-  - dmake test
+  - prove -bv
 
 branches:
   except:
