@@ -8,6 +8,10 @@ install:
   - cpanm --installdeps .
 
 build_script:
+  - del t\eintr.t
+  - del t\signal.t
+  - del t\timeout.t
+  - del t\timer.t
   - perl Makefile.PL
   - prove -bv
 
