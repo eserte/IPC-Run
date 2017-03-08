@@ -1682,7 +1682,7 @@ sub harness {
         @args = ( [@_] );
     }
     else {
-        @args = @_;
+        @args = map { !defined $_ ? bless(\$_, 'IPC::Run::Undef') : $_ } @_;
     }
 
     my @errs;    # Accum errors, emit them when done.
@@ -1904,7 +1904,14 @@ sub harness {
                             }
                         }
 
-                        $dest = shift @args;
+			if ( @args && ref $args[0] eq 'IPC::Run::Undef' ) {
+			    require Symbol;
+			    ${ $args[0] } = $dest = Symbol::gensym();
+			    shift @args;
+			}
+			else {
+			    $dest = shift @args;
+			}
 
                         _debug(
                             'Kid ',  $cur_kid->{NUM},  "'s output fd ", $kfd,
